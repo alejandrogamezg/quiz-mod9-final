@@ -12,7 +12,8 @@ var models = require('../models/models.js');
         	}
         	else {
         		var search = "%" + req.query.search.replace(/\s/g, "%") + "%";
-        		models.Quiz.findAll({where: ["pregunta like ?", search]})
+        		models.Quiz.findAll({ where: ["lower(pregunta) like ?", search.toLowerCase()],
+                                      order:'pregunta ASC'})
         		.then(function (quizes){
         			res.render('quizes/index.ejs', {quizes: quizes});
         		}).catch( function(error){ next(error); });
@@ -20,8 +21,11 @@ var models = require('../models/models.js');
         	}
         },
         load: function(req, res, next, quizId) {	// Autoload - factoriza el código si incluye ruta :quizId
-        	models.Quiz.find(req.params.quizId).then( function(quiz) {
-        		if (quiz){
+        	models.Quiz.find({ 
+                where : { id : quizId},
+                include: [{ model: models.Comment}]   // Añade propiedad quiz.Comments[]
+            }).then( function(quiz) {
+        		if (quiz) {
         			req.quiz = quiz;
         			next();
         		} else {
@@ -34,7 +38,8 @@ var models = require('../models/models.js');
         },
         answer: function(req, res) {	// GET /quizes/:id/answer
         	var resultado = 'Incorrecto :-(';
-        	if ( req.query.respuesta === req.quiz.respuesta ) resultado = 'Correcto :-)';
+        	if ( req.query.respuesta.toLowerCase() === req.quiz.respuesta.toLowerCase() )
+                resultado = 'Correcto :-)';
             res.render('quizes/answer', {quiz: req.quiz, respuesta: resultado});
         },
         new: function(req, res) {  // GET /quizes/new

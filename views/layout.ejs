@@ -47,11 +47,37 @@
                         <li><a href="/quizes">Preguntas</a></li>
                         <li><a href="/author">Créditos</a></li>
                     </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <% if(!session.user) { %>
+                        <li>
+                            <a href="/login"><span class="glyphicon glyphicon-user"></span></a>
+                        </li>
+                        <li>
+                            <a href="/login">login</a>
+                        </li>    
+                        <% } else { %>
+                        <li> 
+                            <a href="#"><%= session.user.username %>&nbsp;&nbsp;<span class="glyphicon glyphicon-user"></span></a>
+                        </li>
+                        <li>
+                            <a href="/logout">logout</a>
+                        </li>
+                        <% } %>
+                    </ul>
                 </div>
                 <!--/.nav-collapse -->
             </div>
             <!--/.container-fluid -->
         </nav>
+
+        <!-- alerts -->
+        <% if (session.expired) {%>
+        <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>La sesión ha caducado.</strong> Para seguir editando haz login de nuevo
+        </div>
+        <% delete session.expired; %>
+        <% } %>
 
         <!-- site body -->
         <section>
