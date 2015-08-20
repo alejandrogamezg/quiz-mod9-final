@@ -2,7 +2,7 @@
 module.exports = function() {
 
 var users = { admin: {id: 1, username: "admin", password: "1234"},
-              pepe: {id: 2, username: "pepe", password: "5678"}
+              andres: {id: 2, username: "andres", password: "4321"}
             };
 
     return {
